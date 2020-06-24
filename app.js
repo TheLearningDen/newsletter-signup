@@ -12,6 +12,12 @@ const app = express();
 
 app.use(express.static('public'));
 app.use(bodyParser.urlencoded({ extended: true }));
+app.use((req, res, next) => {
+  if (req.header('x-forwarded-proto') !== 'https')
+    res.redirect(`https://${req.header('host')}${req.url}`);
+  else
+    next();
+});
 
 // served initial sign up page
 app.get('/', function (req, res) {
